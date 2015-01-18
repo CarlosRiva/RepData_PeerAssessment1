@@ -5,7 +5,7 @@ date: "January 18, 2015"
 output: html_document
 ---
 
-##Reproducible research: Peer Assessment 1
+##Reproducible research: Peer Assessment 1   Coursera
 
 ###Part 1 Settings & Load and data processing 
 
