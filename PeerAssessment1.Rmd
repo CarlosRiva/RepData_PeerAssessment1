@@ -3,7 +3,8 @@ title: "PeerAssessment1"
 author: "Carlos E Rivadeneyra"
 date: "January 18, 2015"
 output: html_document
-Course:
+Course: Reproducible research
+
 ---
 
 ##Reproducible research: Peer Assessment 1
