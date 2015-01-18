@@ -3,9 +3,10 @@ title: "PeerAssessment1"
 author: "Carlos E Rivadeneyra"
 date: "January 18, 2015"
 output: html_document
+Course:
 ---
 
-##Reproducible research: Peer Assessment 1   Coursera
+##Reproducible research: Peer Assessment 1
 
 ###Part 1 Settings & Load and data processing 
 
