@@ -2,7 +2,6 @@
 title: "PeerAssessment1"
 author: "Carlos E Rivadeneyra"
 date: "January 18, 2015"
-Sundar
 output: html_document
 ---
 
