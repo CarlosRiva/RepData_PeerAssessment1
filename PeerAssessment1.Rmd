@@ -1,0 +1,117 @@
+---
+title: "PeerAssessment1"
+author: "Carlos Rivadeneyra"
+date: "January 18, 2015"
+output: html_document
+---
+
+##Reproducible research: Peer Assessment 1
+
+###Part 1 Settings & Load and data processing 
+
+**First default settings**
+
+```{r}
+echo = TRUE  # code visible
+options(scipen = 1)  # Turn off scientific notations for numbers
+```
+
+*Load and processing data
+
+
+```{r}
+data <- read.csv("activity.csv")
+head(data)
+```
+
+##What is mean total number of steps taken per day?
+
+In this part we will  ignore the missing values in the dataset.
+
+Make a histogram of the total number of steps taken each day
+
+```{r}
+library(ggplot2)
+Tsteps <- tapply(data$steps, data$date, FUN = sum, na.rm = TRUE)
+qplot(Tsteps, binwidth = 900, xlab = "total # steps each day")
+```
+
+```{r}
+mean(Tsteps, na.rm = TRUE)
+median(Tsteps, na.rm = TRUE)
+```
+
+##What is the average daily activity pattern?
+
+```{r}
+library(ggplot2)
+aver <- aggregate(x = list(steps = data$steps), by = list(interval = data$interval), 
+    FUN = mean, na.rm = TRUE)
+ggplot(data = aver, aes(x = interval, y = steps)) + geom_line() + xlab("five minute inter") + ylab("average steps taken")
+```
+
+```{r}
+aver[which.max(aver$steps), ]
+```
+
+## MISSING VALUES
+
+1. The total number of rows with NAs:
+
+```{r}
+sum(is.na(data))
+```
+
+I will use the mean for that 5-minute interval to replace each NA value in the steps column.
+
+```{r}
+fill.value <- function(steps, interval) {
+    filled <- NA
+    if (!is.na(steps)) 
+        filled <- c(steps) else filled <- (aver[aver$interval == interval, "steps"])
+    return(filled)
+}
+Newdata <- data
+Newdata$steps <- mapply(fill.value, Newdata$steps, Newdata$interval)
+```
+
+Histogram with the replacement of 5 minute mean interval
+
+```{r}
+TTsteps <- tapply(Newdata$steps, Newdata$date, FUN = sum)
+qplot(TTsteps, binwidth = 900, xlab = "total # steps taken each day")
+```
+
+
+```{r}
+mean(TTsteps)
+```
+
+```{r}
+median(TTsteps)
+```
+
+##Are there differences in activity patterns between weekdays and weekends?
+
+```{r}
+head(Newdata)
+```
+
+```{r}
+weekday.or.weekend <- function(date) {
+    day <- weekdays(date)
+    if (day %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")) 
+        return("weekday") else if (day %in% c("Saturday", "Sunday")) 
+        return("weekend") else stop("invalid date")
+}
+Newdata$date <- as.Date(Newdata$date)
+Newdata$day <- sapply(Newdata$date, FUN = weekday.or.weekend)
+```
+
+Lets show two graphs a time series plot of the 5 minute interval  and the average number of steps, averaged across on weekdays   weekends.
+
+```{r}
+aver1 <- aggregate(steps ~ interval + day, data = Newdata, mean)
+ggplot(aver1, aes(interval, steps)) + geom_line() + facet_grid(day ~ .) + 
+    xlab("five minute interval") + ylab("# steps")
+```
